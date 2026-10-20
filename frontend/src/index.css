@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 215 28% 17%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 28% 17%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 160 84% 39%;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 210 40% 96%;
+    --card: 224 71% 6%;
+    --card-foreground: 210 40% 96%;
+    --muted: 223 47% 11%;
+    --muted-foreground: 218 11% 65%;
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 160 84% 45%;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  * {
+    @apply focus-visible:outline-none;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-border bg-card text-card-foreground shadow-lg shadow-slate-200/50 dark:shadow-black/20;
+  }
+  .form-card {
+    @apply rounded-2xl border border-border bg-card text-card-foreground shadow-xl shadow-slate-200/60 transition-all duration-200 dark:shadow-black/30;
+  }
+  .auth-form-container {
+    @apply rounded-2xl border border-border bg-card p-1 shadow-2xl shadow-brand-900/10 dark:shadow-black/40;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300;
+  }
+  .input {
+    @apply w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm text-foreground shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:placeholder:text-slate-500;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply btn bg-brand-600 text-white shadow-sm hover:bg-brand-700;
+  }
+  .btn-secondary {
+    @apply btn border border-border bg-card text-foreground hover:bg-muted;
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700;
+  }
+  .btn-ghost {
+    @apply btn text-muted-foreground hover:bg-muted;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+  .table-th {
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground;
+  }
+  .table-td {
+    @apply px-4 py-3 text-sm text-foreground;
+  }
+}
