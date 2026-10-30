@@ -11,7 +11,7 @@ export function Card({ className, children, ...rest }: HTMLAttributes<HTMLDivEle
 
 export function CardHeader({ className, children, ...rest }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={classNames('flex items-center justify-between border-b border-border px-5 py-4', className)} {...rest}>
+    <div className={classNames('flex flex-wrap items-center justify-between gap-2 border-b border-border px-5 py-4', className)} {...rest}>
       {children}
     </div>
   );
@@ -19,7 +19,7 @@ export function CardHeader({ className, children, ...rest }: HTMLAttributes<HTML
 
 export function CardTitle({ className, children, ...rest }: HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={classNames('text-base font-semibold text-foreground', className)} {...rest}>
+    <h3 className={classNames('min-w-0 break-words text-base font-semibold text-foreground', className)} {...rest}>
       {children}
     </h3>
   );

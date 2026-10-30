@@ -103,41 +103,43 @@ export function SummariesPage() {
         {rows.length === 0 ? (
           <EmptyState title={t('summaries.noCategories')} description={t('summaries.noCategoriesDesc')} />
         ) : (
-          <table className="w-full">
-            <thead className="bg-background">
-              <tr>
-                <th className="table-th">{t('summaries.category')}</th>
-                <th className="table-th text-right">{t('summaries.records')}</th>
-                <th className="table-th text-right">{t('summaries.total')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {rows.map((row) => (
-                <tr key={`${row.category_id}-${row.category_name}`}>
-                  <td className="table-td">
-                    <span className="inline-flex items-center gap-2">
-                      <span
-                        className="h-2.5 w-2.5 rounded-full"
-                        style={{ backgroundColor: row.color }}
-                      />
-                      {row.category_name}
-                    </span>
-                  </td>
-                  <td className="table-td text-right">{row.count}</td>
-                  <td
-                    className={classNames(
-                      'table-td text-right font-semibold',
-                      tone === 'green'
-                        ? 'text-emerald-600 dark:text-emerald-400'
-                        : 'text-red-600 dark:text-red-400',
-                    )}
-                  >
-                    {formatMoney(row.total, currency)}
-                  </td>
+          <div className="table-scroll">
+            <table className="w-full min-w-[16rem]">
+              <thead className="bg-background">
+                <tr>
+                  <th className="table-th">{t('summaries.category')}</th>
+                  <th className="table-th text-right">{t('summaries.records')}</th>
+                  <th className="table-th text-right">{t('summaries.total')}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {rows.map((row) => (
+                  <tr key={`${row.category_id}-${row.category_name}`}>
+                    <td className="table-td">
+                      <span className="inline-flex items-center gap-2">
+                        <span
+                          className="h-2.5 w-2.5 shrink-0 rounded-full"
+                          style={{ backgroundColor: row.color }}
+                        />
+                        <span className="truncate">{row.category_name}</span>
+                      </span>
+                    </td>
+                    <td className="table-td text-right">{row.count}</td>
+                    <td
+                      className={classNames(
+                        'table-td whitespace-nowrap text-right font-semibold',
+                        tone === 'green'
+                          ? 'text-emerald-600 dark:text-emerald-400'
+                          : 'text-red-600 dark:text-red-400',
+                      )}
+                    >
+                      {formatMoney(row.total, currency)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </CardBody>
     </Card>
@@ -147,7 +149,7 @@ export function SummariesPage() {
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-foreground sm:text-2xl">{t('summaries.title')}</h1>
+          <h1 className="page-title">{t('summaries.title')}</h1>
           <p className="text-sm text-muted-foreground">{t('summaries.subtitle')}</p>
         </div>
         <Button variant="secondary" onClick={() => window.print()}>
@@ -165,7 +167,7 @@ export function SummariesPage() {
                   key={p.value}
                   onClick={() => setPeriod(p.value)}
                   className={classNames(
-                    'rounded-lg px-3.5 py-2 text-sm font-medium transition',
+                    'flex min-h-10 items-center rounded-lg px-3.5 py-2 text-sm font-medium transition',
                     period === p.value
                       ? 'bg-card text-brand-700 shadow-sm dark:text-brand-300'
                       : 'text-muted-foreground hover:text-foreground',
@@ -355,15 +357,15 @@ export function SummariesPage() {
                       .sort((a, b) => b.count - a.count)
                       .slice(0, 5)
                       .map((row) => (
-                        <div key={`${row.category_id}-${row.category_name}`} className="flex items-center justify-between">
-                          <span className="flex items-center gap-2 text-sm text-foreground">
+                        <div key={`${row.category_id}-${row.category_name}`} className="flex items-center justify-between gap-3">
+                          <span className="flex min-w-0 items-center gap-2 text-sm text-foreground">
                             <span
-                              className="h-2.5 w-2.5 rounded-full"
+                              className="h-2.5 w-2.5 shrink-0 rounded-full"
                               style={{ backgroundColor: row.color }}
                             />
-                            {row.category_name}
+                            <span className="truncate">{row.category_name}</span>
                           </span>
-                          <span className="text-sm font-semibold text-foreground">
+                          <span className="shrink-0 text-sm font-semibold text-foreground">
                             {row.count} × {formatMoney(row.total, currency)}
                           </span>
                         </div>

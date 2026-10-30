@@ -80,10 +80,10 @@ export function ReportsPage() {
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-foreground sm:text-2xl">{t('reports.title')}</h1>
+          <h1 className="page-title">{t('reports.title')}</h1>
           <p className="text-sm text-muted-foreground">{t('reports.subtitle')}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button
             variant="secondary"
             onClick={() => handleExport('csv')}
@@ -167,8 +167,8 @@ export function ReportsPage() {
           />
         ) : (
           <>
-            <div className="hidden overflow-x-auto sm:block">
-              <table className="w-full">
+            <div className="table-scroll hidden md:block">
+              <table className="w-full min-w-[40rem]">
                 <thead className="bg-background">
                   <tr>
                     <th className="table-th">{t('reports.date')}</th>
@@ -198,18 +198,23 @@ export function ReportsPage() {
               </table>
             </div>
 
-            <div className="divide-y divide-border sm:hidden">
+            <div className="divide-y divide-border md:hidden">
               {report.rows.map((row) => (
-                <div key={row.id} className="flex items-center justify-between px-4 py-3">
-                  <div>
+                <div key={row.id} className="flex items-start justify-between gap-3 px-4 py-3">
+                  <div className="min-w-0">
                     <Badge tone={row.type === 'income' ? 'green' : 'red'}>
                       {row.type === 'income' ? t('types.income') : t('types.expense')}
                     </Badge>
-                    <p className="mt-1 text-xs text-muted-foreground">
+                    <p className="mt-1 break-words text-xs text-muted-foreground">
                       {formatDate(row.txn_date)} • {row.category_name ?? t('reports.uncategorised')}
                     </p>
+                    {row.description && (
+                      <p className="mt-0.5 break-words text-xs text-muted-foreground">{row.description}</p>
+                    )}
                   </div>
-                  <p className="text-sm font-semibold">{formatMoney(row.amount, currency)}</p>
+                  <p className="shrink-0 text-sm font-semibold">
+                    {formatMoney(row.amount, currency)}
+                  </p>
                 </div>
               ))}
             </div>

@@ -86,7 +86,7 @@ export function ForgotPasswordPage() {
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t('forgot.intro')}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+        <form onSubmit={handleSubmit} className="form-surface space-y-4" noValidate>
           <Input
             label={t('forgot.email')}
             required

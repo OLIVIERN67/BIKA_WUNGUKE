@@ -61,25 +61,25 @@ export function CategoriesPage() {
       ) : (
         <div className="divide-y divide-border">
           {items.map((c) => (
-            <div key={c.id} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-muted">
-              <div className="flex items-center gap-3">
-                <span className="h-4 w-4 rounded-full" style={{ backgroundColor: c.color }} />
-                <span className="text-sm font-medium text-foreground">{c.name}</span>
+            <div key={c.id} className="flex items-center justify-between gap-2 px-4 py-3 hover:bg-muted">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="h-4 w-4 shrink-0 rounded-full" style={{ backgroundColor: c.color }} />
+                <span className="truncate text-sm font-medium text-foreground">{c.name}</span>
               </div>
-              <div className="flex gap-1">
+              <div className="flex shrink-0 gap-1">
                 <button
                   onClick={() => {
                     setEditing(c);
                     setFormOpen(true);
                   }}
-                  className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  className="icon-btn hover:bg-muted hover:text-foreground"
                   aria-label={t('common.edit')}
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => setToDelete(c)}
-                  className="rounded-lg p-2 text-muted-foreground hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
+                  className="icon-btn hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
                   aria-label={t('common.delete')}
                 >
                   <Trash2 className="h-4 w-4" />
@@ -96,7 +96,7 @@ export function CategoriesPage() {
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-foreground sm:text-2xl">{t('categories.title')}</h1>
+          <h1 className="page-title">{t('categories.title')}</h1>
           <p className="text-sm text-muted-foreground">{t('categories.subtitle')}</p>
         </div>
         <Button

@@ -36,27 +36,32 @@ export function Modal({ open, onClose, title, children, footer, size = 'md' }: M
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/60 backdrop-blur-sm p-0 sm:items-center sm:p-4">
+    <div className="modal-overlay safe-x fixed inset-0 z-50 flex items-end justify-center p-0 backdrop-blur-[2px] sm:items-center sm:p-4">
       <div
-        className={classNames('w-full rounded-t-2xl border border-border bg-card text-card-foreground shadow-2xl shadow-slate-900/20 dark:shadow-black/50 sm:rounded-2xl', sizeMap[size])}
+        className={classNames(
+          'modal-panel safe-b w-full overflow-hidden rounded-t-2xl border border-border text-card-foreground sm:rounded-2xl',
+          sizeMap[size],
+        )}
         role="dialog"
         aria-modal="true"
       >
         {title && (
-          <div className="flex items-center justify-between border-b border-border px-5 py-4">
-            <h2 className="text-base font-semibold text-foreground">{title}</h2>
+          <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
+            <h2 className="min-w-0 break-words text-base font-semibold text-foreground">{title}</h2>
             <button
               onClick={onClose}
-              className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              className="icon-btn -mr-2 shrink-0 hover:bg-muted hover:text-foreground"
               aria-label={t('modal.close')}
             >
               <X className="h-5 w-5" />
             </button>
           </div>
         )}
-        <div className="max-h-[70vh] overflow-y-auto px-5 py-4">{children}</div>
+        <div className="max-h-[72dvh] overflow-y-auto overscroll-contain px-4 py-4 sm:max-h-[75vh] sm:px-5">
+          {children}
+        </div>
         {footer && (
-          <div className="flex flex-col-reverse gap-2 border-t border-border px-5 py-4 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-2 border-t border-border px-4 py-4 sm:flex-row sm:justify-end sm:px-5">
             {footer}
           </div>
         )}

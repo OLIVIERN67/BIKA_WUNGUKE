@@ -116,7 +116,7 @@ export function SavingsFormModal({ open, onClose, onSaved, editing }: Props) {
         </>
       }
     >
-      <form id="savings-form" onSubmit={handleSubmit} className="space-y-4">
+      <form id="savings-form" onSubmit={handleSubmit} className="form-surface space-y-4">
         <div>
           <span className="label">{t('savingsModal.type')}</span>
           <div className="grid grid-cols-2 gap-2">

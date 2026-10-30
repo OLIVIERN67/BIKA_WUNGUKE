@@ -56,11 +56,11 @@ export function InsightsPage() {
     <div className="space-y-6">
       <div>
         <div className="flex items-center gap-2">
-          <BrainCircuit className="h-5 w-5 text-brand-600" />
-          <h1 className="text-2xl font-semibold text-foreground">{t('nav.insights', 'Financial Insights')}</h1>
+          <BrainCircuit className="h-5 w-5 shrink-0 text-brand-600" />
+          <h1 className="page-title">{t('nav.insights', 'Financial Insights')}</h1>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          {t('insights.subtitle', 'Rule-based insights from your recorded transactions. Educational only — not a guarantee of loan approval.')}
+          {t('insights.subtitle', 'Rule-based insights from your recorded transactions. Educational only â€” not a guarantee of loan approval.')}
         </p>
       </div>
 
@@ -129,12 +129,12 @@ export function InsightsPage() {
                 <p className="text-sm text-muted-foreground">No expense records in this period.</p>
               ) : (
                 data.expenseInsights.topCategories.map((cat) => (
-                  <div key={cat.category_name} className="flex items-center justify-between rounded-xl border border-border p-3">
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{cat.category_name}</p>
+                  <div key={cat.category_name} className="flex items-center justify-between gap-3 rounded-xl border border-border p-3">
+                    <div className="min-w-0">
+                      <p className="break-words text-sm font-medium text-foreground">{cat.category_name}</p>
                       <p className="text-xs text-muted-foreground">{cat.count} transaction(s)</p>
                     </div>
-                    <div className="text-right">
+                    <div className="shrink-0 text-right">
                       <p className="text-sm font-semibold text-foreground">{formatMoney(cat.total, currency)}</p>
                       <p className="text-xs text-muted-foreground">{cat.percentage.toFixed(1)}%</p>
                     </div>
@@ -168,16 +168,16 @@ export function InsightsPage() {
                 <p className="text-sm font-medium text-foreground">Goals</p>
                 {data.savingsInsights.goals.map((g) => (
                   <div key={g.id} className="rounded-xl border border-border p-3">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-foreground">{g.name}</p>
-                      <p className="text-xs text-muted-foreground">{g.progress.toFixed(1)}%</p>
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="min-w-0 truncate text-sm font-medium text-foreground">{g.name}</p>
+                      <p className="shrink-0 text-xs text-muted-foreground">{g.progress.toFixed(1)}%</p>
                     </div>
                     <div className="mt-2 h-2 w-full rounded-full bg-muted">
                       <div className="h-2 rounded-full bg-brand-600" style={{ width: `${Math.min(100, g.progress)}%` }} />
                     </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
+                    <p className="mt-1 break-words text-xs text-muted-foreground">
                       Contributed {formatMoney(g.contributed, currency)} / {formatMoney(g.target_amount, currency)}
-                      {g.remaining !== null ? ` • Remaining ${formatMoney(g.remaining, currency)}` : ''}
+                      {g.remaining !== null ? ` â€” Remaining ${formatMoney(g.remaining, currency)}` : ''}
                     </p>
                   </div>
                 ))}
@@ -219,9 +219,9 @@ export function InsightsPage() {
             <div className="mt-4 space-y-2">
               {data.loanReadiness.indicators.map((ind, idx) => (
                 <div key={idx} className="rounded-xl border border-border p-3">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-foreground">{ind.name}</p>
-                    <span className="text-xs text-muted-foreground">{ind.status.replace('-', ' ')}</span>
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="min-w-0 break-words text-sm font-medium text-foreground">{ind.name}</p>
+                    <span className="shrink-0 text-xs text-muted-foreground">{ind.status.replace('-', ' ')}</span>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">{ind.description}</p>
                 </div>

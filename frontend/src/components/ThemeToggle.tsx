@@ -35,7 +35,7 @@ export function ThemeToggle({ onDark = false, className }: ThemeToggleProps) {
         onChange={(event) => setPreference(event.target.value as ThemePreference)}
         aria-label={t('theme.toggle')}
         className={classNames(
-          'h-9 appearance-none rounded-lg border py-1.5 pl-9 pr-8 text-xs font-semibold transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30',
+          'toggle-select',
           onDark
             ? 'border-white/20 bg-white/10 text-white'
             : 'border-border bg-card text-foreground hover:bg-muted',

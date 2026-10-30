@@ -186,38 +186,40 @@ export function MyFinancialRecordPage() {
         {list.length === 0 ? (
           <EmptyState title={t('financialRecord.noRecords')} description={t('financialRecord.nothingInGroup')} />
         ) : (
-          <table className="w-full">
-            <thead className="bg-background">
-              <tr>
-                <th className="table-th">{t('financialRecord.category')}</th>
-                <th className="table-th text-right">{t('financialRecord.records')}</th>
-                <th className="table-th text-right">{t('financialRecord.total')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {list.map((row) => (
-                <tr key={`${row.category_id}-${row.category_name}`}>
-                  <td className="table-td">
-                    <span className="inline-flex items-center gap-2">
-                      <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: row.color }} />
-                      {row.category_name}
-                    </span>
-                  </td>
-                  <td className="table-td text-right">{row.count}</td>
-                  <td
-                    className={classNames(
-                      'table-td text-right font-semibold',
-                      tone === 'green'
-                        ? 'text-emerald-600 dark:text-emerald-400'
-                        : 'text-red-600 dark:text-red-400',
-                    )}
-                  >
-                    {formatMoney(row.total, currency)}
-                  </td>
+          <div className="table-scroll">
+            <table className="w-full min-w-[16rem]">
+              <thead className="bg-background">
+                <tr>
+                  <th className="table-th">{t('financialRecord.category')}</th>
+                  <th className="table-th text-right">{t('financialRecord.records')}</th>
+                  <th className="table-th text-right">{t('financialRecord.total')}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {list.map((row) => (
+                  <tr key={`${row.category_id}-${row.category_name}`}>
+                    <td className="table-td">
+                      <span className="inline-flex min-w-0 items-center gap-2">
+                        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: row.color }} />
+                        <span className="truncate">{row.category_name}</span>
+                      </span>
+                    </td>
+                    <td className="table-td text-right">{row.count}</td>
+                    <td
+                      className={classNames(
+                        'table-td whitespace-nowrap text-right font-semibold',
+                        tone === 'green'
+                          ? 'text-emerald-600 dark:text-emerald-400'
+                          : 'text-red-600 dark:text-red-400',
+                      )}
+                    >
+                      {formatMoney(row.total, currency)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </CardBody>
     </Card>
@@ -229,7 +231,7 @@ export function MyFinancialRecordPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-foreground sm:text-2xl">{t('financialRecord.title')}</h1>
+          <h1 className="page-title">{t('financialRecord.title')}</h1>
           <p className="text-sm text-muted-foreground">{t('financialRecord.subtitle')}</p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -268,7 +270,7 @@ export function MyFinancialRecordPage() {
                   key={p.value}
                   onClick={() => setPeriod(p.value)}
                   className={classNames(
-                    'rounded-lg px-3.5 py-2 text-sm font-medium transition',
+                    'flex min-h-10 items-center rounded-lg px-3.5 py-2 text-sm font-medium transition',
                     period === p.value
                       ? 'bg-card text-brand-700 shadow-sm dark:text-brand-300'
                       : 'text-muted-foreground hover:text-foreground',
@@ -284,7 +286,7 @@ export function MyFinancialRecordPage() {
             </p>
           </div>
           {period === 'custom' && (
-            <div className="grid grid-cols-2 gap-3 sm:max-w-md">
+            <div className="grid w-full gap-3 min-[420px]:grid-cols-2 sm:max-w-md sm:w-auto">
               <Input label={t('period.from')} type="date" value={customFrom} onChange={(e) => setCustomFrom(e.target.value)} />
               <Input label={t('period.to')} type="date" value={customTo} onChange={(e) => setCustomTo(e.target.value)} />
             </div>
@@ -313,9 +315,9 @@ export function MyFinancialRecordPage() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-sm text-foreground">
-              <MapPin className="h-4 w-4 text-muted-foreground" />
-              {user?.business_location || t('financialRecord.locationNotSet')}
+            <div className="flex min-w-0 items-center gap-2 text-sm text-foreground">
+              <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <span className="break-words">{user?.business_location || t('financialRecord.locationNotSet')}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-foreground">
               <Wallet className="h-4 w-4 text-muted-foreground" />
@@ -392,8 +394,8 @@ export function MyFinancialRecordPage() {
               </span>
             </CardHeader>
             <CardBody className="p-0">
-              <div className="max-h-[420px] overflow-y-auto">
-                <table className="w-full">
+              <div className="table-scroll max-h-[420px] overflow-y-auto">
+                <table className="w-full min-w-[40rem]">
                   <thead className="sticky top-0 bg-background">
                     <tr>
                       <th className="table-th">{t('financialRecord.date')}</th>
@@ -463,7 +465,7 @@ export function MyFinancialRecordPage() {
               {t('financialRecord.previewGenerated', { label: periodLabel, generated: generatedLabel })}
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-3 min-[380px]:grid-cols-2">
             <div className="rounded-lg bg-background p-3">
               <p className="text-xs text-muted-foreground">{t('financialRecord.previewIncome')}</p>
               <p className="font-semibold text-emerald-600 dark:text-emerald-400">

@@ -174,7 +174,7 @@ export function ResetPasswordPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+        <form onSubmit={handleSubmit} className="form-surface space-y-4" noValidate>
           <PasswordInput
             label={t('reset.newPassword')}
             required

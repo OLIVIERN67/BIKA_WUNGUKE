@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
@@ -16,10 +16,20 @@ installGlobalErrorHandlers();
 function AppShell() {
   const { i18n } = useTranslation();
   const { resolvedTheme } = useTheme();
+  const [narrowViewport, setNarrowViewport] = useState(
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 640px)').matches : false,
+  );
 
   useEffect(() => {
     document.documentElement.lang = i18n.language;
   }, [i18n.language]);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 640px)');
+    const onChange = (event: MediaQueryListEvent) => setNarrowViewport(event.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   return (
     <>
@@ -27,7 +37,7 @@ function AppShell() {
         <App />
       </ErrorBoundary>
       <Toaster
-        position="top-right"
+        position={narrowViewport ? 'top-center' : 'top-right'}
         toastOptions={{
           duration: 3500,
           className: 'i18n-toast',
@@ -35,6 +45,7 @@ function AppShell() {
             background: resolvedTheme === 'dark' ? '#1e293b' : '#ffffff',
             color: resolvedTheme === 'dark' ? '#f1f5f9' : '#1e293b',
             border: `1px solid ${resolvedTheme === 'dark' ? '#334155' : '#e2e8f0'}`,
+            maxWidth: 'min(22rem, calc(100vw - 2rem))',
           },
         }}
         containerStyle={{

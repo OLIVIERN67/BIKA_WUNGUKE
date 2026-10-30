@@ -126,7 +126,7 @@ export function TransactionsPage() {
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-foreground sm:text-2xl">{t('transactions.title')}</h1>
+          <h1 className="page-title">{t('transactions.title')}</h1>
           <p className="text-sm text-muted-foreground">{t('transactions.subtitle')}</p>
         </div>
         <Button onClick={openCreate}>
@@ -208,9 +208,10 @@ export function TransactionsPage() {
           />
         ) : (
           <>
-            {/* Desktop table */}
-            <div className="hidden overflow-x-auto sm:block">
-              <table className="w-full">
+            {/* Desktop table - only from tablet landscape up; narrow screens get
+                the card list below so nothing is crushed or clipped. */}
+            <div className="table-scroll hidden md:block">
+              <table className="w-full min-w-[44rem]">
                 <thead className="bg-muted">
                   <tr>
                     <th className="table-th">{t('transactions.date')}</th>
@@ -263,14 +264,14 @@ export function TransactionsPage() {
                         <div className="flex justify-end gap-1">
                           <button
                             onClick={() => openEdit(txn)}
-                            className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                            className="icon-btn hover:bg-muted hover:text-foreground"
                             aria-label={t('transactions.edit')}
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => setToDelete(txn)}
-                            className="rounded-lg p-2 text-muted-foreground hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
+                            className="icon-btn hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
                             aria-label={t('transactions.delete')}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -284,11 +285,11 @@ export function TransactionsPage() {
             </div>
 
             {/* Mobile cards */}
-            <div className="divide-y divide-border sm:hidden">
+            <div className="divide-y divide-border md:hidden">
               {rows.map((txn) => (
-                <div key={txn.id} className="flex items-start justify-between gap-3 px-4 py-3 hover:bg-muted">
+                <div key={txn.id} className="flex items-start justify-between gap-2 px-4 py-3 hover:bg-muted">
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       {txn.type === 'income' ? (
                         <Badge tone="green">{t('types.income')}</Badge>
                       ) : (
@@ -296,11 +297,11 @@ export function TransactionsPage() {
                       )}
                       <span className="text-xs text-muted-foreground">{formatDate(txn.txn_date)}</span>
                     </div>
-                    <p className="mt-1 truncate text-sm text-foreground">
+                    <p className="mt-1 break-words text-sm text-foreground">
                       {txn.description || txn.category_name || t('common.record')}
                     </p>
                     {txn.category_name && (
-                      <p className="text-xs text-muted-foreground">{txn.category_name}</p>
+                      <p className="break-words text-xs text-muted-foreground">{txn.category_name}</p>
                     )}
                   </div>
                   <div className="shrink-0 text-right">
@@ -313,17 +314,17 @@ export function TransactionsPage() {
                     >
                       {txn.type === 'income' ? '+' : '-'} {formatMoney(txn.amount, currency)}
                     </p>
-                    <div className="mt-1 flex justify-end gap-1">
+                    <div className="mt-1 flex justify-end gap-0.5">
                       <button
                         onClick={() => openEdit(txn)}
-                        className="rounded-lg p-1.5 text-muted-foreground hover:bg-muted"
+                        className="icon-btn hover:bg-muted hover:text-foreground"
                         aria-label={t('transactions.edit')}
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => setToDelete(txn)}
-                        className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
+                        className="icon-btn hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
                         aria-label={t('transactions.delete')}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -334,7 +335,7 @@ export function TransactionsPage() {
               ))}
             </div>
 
-            <div className="flex items-center justify-between border-t border-border px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border px-4 py-3">
               <p className="text-xs text-muted-foreground">
                 {t('transactions.pageOf', { page, pages, total })}
               </p>

@@ -51,15 +51,15 @@ export function LandingPage() {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-card">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+    <div className="safe-x min-h-dvh bg-card">
+      <header className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <div className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white">
             <Wallet className="h-5 w-5" />
           </div>
           <span className="text-sm font-extrabold tracking-tight text-foreground">BIKA WUNGUKE</span>
         </div>
-        <nav className="flex items-center gap-2">
+        <nav className="flex flex-wrap items-center justify-end gap-2">
           <Link to="/login" className="btn-ghost">
             {t('landing.signIn')}
           </Link>
@@ -166,7 +166,7 @@ export function LandingPage() {
         </Link>
       </section>
 
-      <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground">
+      <footer className="safe-b border-t border-border py-6 text-center text-xs text-muted-foreground">
         {t('footer.copyright', { year: new Date().getFullYear() })}
       </footer>
     </div>

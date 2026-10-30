@@ -125,7 +125,7 @@ export function TransactionFormModal({ open, onClose, onSaved, categories, editi
         </>
       }
     >
-      <form id="transaction-form" onSubmit={handleSubmit} className="space-y-4">
+      <form id="transaction-form" onSubmit={handleSubmit} className="form-surface space-y-4">
         <div>
           <span className="label">{t('transactionModal.type')}</span>
           <div className="grid grid-cols-2 gap-2">

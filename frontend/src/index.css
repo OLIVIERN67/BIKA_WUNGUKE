@@ -6,11 +6,11 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
+    --background: 210 40% 97%;
     --foreground: 215 28% 17%;
     --card: 0 0% 100%;
     --card-foreground: 215 28% 17%;
-    --muted: 210 40% 96%;
+    --muted: 210 35% 95%;
     --muted-foreground: 215 16% 47%;
     --border: 214 32% 91%;
     --input: 214 32% 91%;
@@ -25,18 +25,62 @@
     --muted: 223 47% 11%;
     --muted-foreground: 218 11% 65%;
     --border: 216 34% 17%;
-    --input: 216 34% 17%;
+    --input: 216 34% 20%;
     --ring: 160 84% 45%;
   }
 
   html {
     -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Keeps sticky headers working while still catching stray wide content. */
+    max-width: 100%;
   }
+
   body {
     @apply bg-background text-foreground antialiased;
+    min-width: 0;
+    overflow-x: clip;
+    -webkit-tap-highlight-color: transparent;
   }
-  * {
-    @apply focus-visible:outline-none;
+
+  /* Never let media stretch or force a horizontal scrollbar. */
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Visible keyboard focus for every interactive element (mouse users are
+     unaffected because the ring only shows for :focus-visible). */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* iOS Safari zooms any field whose font-size is below 16px, which breaks the
+     viewport layout. Keep the compact look on pointer devices, but guarantee
+     16px for every real form control on small viewports. The doubled class
+     selector is deliberate: it has to out-specify Tailwind's text-* utilities.
+     OTP cells and other decorative text inputs are intentionally excluded. */
+  @media (max-width: 640px) {
+    .input.input,
+    .toggle-select.toggle-select {
+      font-size: 16px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
@@ -48,16 +92,51 @@
     @apply rounded-2xl border border-border bg-card text-card-foreground shadow-xl shadow-slate-200/60 transition-all duration-200 dark:shadow-black/30;
   }
   .auth-form-container {
-    @apply rounded-2xl border border-border bg-card p-1 shadow-2xl shadow-brand-900/10 dark:shadow-black/40;
+    @apply rounded-2xl border border-border bg-card p-1 shadow-2xl shadow-brand-900/10 backdrop-blur-sm dark:bg-card dark:shadow-black/40;
+  }
+  .auth-form-shell {
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(circle at 15% 15%, hsl(160 84% 39% / 0.08), transparent 32%),
+      radial-gradient(circle at 90% 85%, hsl(190 80% 45% / 0.07), transparent 30%);
+  }
+  .dark .auth-form-shell {
+    background-image:
+      radial-gradient(circle at 15% 15%, hsl(160 84% 45% / 0.12), transparent 32%),
+      radial-gradient(circle at 90% 85%, hsl(190 80% 55% / 0.09), transparent 30%);
+  }
+  .form-surface {
+    @apply rounded-xl border border-border bg-background p-4 shadow-sm shadow-slate-200/40 dark:bg-muted dark:shadow-black/10 sm:p-5;
+  }
+  .modal-overlay {
+    background: hsl(222 47% 11% / 0.56);
+  }
+  .modal-panel {
+    background-color: hsl(var(--card));
+    box-shadow: 0 24px 60px hsl(222 47% 11% / 0.28);
+  }
+  .dark .modal-overlay {
+    background: hsl(222 47% 3% / 0.72);
+  }
+  .dark .modal-panel {
+    box-shadow: 0 24px 60px hsl(0 0% 0% / 0.55);
   }
   .label {
     @apply mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300;
   }
   .input {
-    @apply w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm text-foreground shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:placeholder:text-slate-500;
+    @apply w-full rounded-xl border border-input bg-card px-3.5 py-2.5 text-sm text-foreground shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:bg-background dark:placeholder:text-slate-500;
+    /* Grid/flex children default to min-width:auto, which lets form controls
+       (date pickers especially) blow the layout out on narrow screens. */
+    min-width: 0;
+    max-width: 100%;
+  }
+  /* Fields already draw a brand ring on focus - no need for a second outline. */
+  .input:focus-visible {
+    outline: none;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60;
   }
   .btn-primary {
     @apply btn bg-brand-600 text-white shadow-sm hover:bg-brand-700;
@@ -74,10 +153,37 @@
   .badge {
     @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold;
   }
+  .icon-btn {
+    @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-muted-foreground transition;
+  }
+  /* Compact native selects used for the language / theme pickers. */
+  .toggle-select {
+    @apply h-11 w-full max-w-[12rem] appearance-none rounded-lg border py-2 pl-9 pr-8 text-xs font-semibold transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 sm:w-auto sm:text-sm;
+  }
   .table-th {
-    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground;
+    @apply whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground;
   }
   .table-td {
     @apply px-4 py-3 text-sm text-foreground;
+  }
+  /* Horizontal scrolling lives inside the card, never on the page itself. */
+  .table-scroll {
+    @apply w-full overflow-x-auto overscroll-x-contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .page-title {
+    @apply font-bold leading-tight text-foreground;
+    font-size: clamp(1.25rem, 1rem + 1.1vw, 1.5rem);
+  }
+}
+
+@layer utilities {
+  /* Respects notches / rounded display cut-outs in every orientation. */
+  .safe-x {
+    padding-left: max(env(safe-area-inset-left), 0px);
+    padding-right: max(env(safe-area-inset-right), 0px);
+  }
+  .safe-b {
+    padding-bottom: max(env(safe-area-inset-bottom), 0px);
   }
 }

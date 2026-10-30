@@ -119,7 +119,7 @@ export function DashboardPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-foreground sm:text-2xl">
+          <h1 className="page-title">
             {t('dashboard.greeting', { name: user?.full_name?.split(' ')[0] ?? '' })}
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -144,7 +144,7 @@ export function DashboardPage() {
                   key={p.value}
                   onClick={() => setPeriod(p.value)}
                   className={classNames(
-                    'rounded-lg px-3.5 py-2 text-sm font-medium transition',
+                    'flex min-h-10 items-center rounded-lg px-3.5 py-2 text-sm font-medium transition',
                     period === p.value
                       ? 'bg-card text-brand-700 shadow-sm dark:text-brand-300'
                       : 'text-muted-foreground hover:text-foreground',
@@ -156,7 +156,7 @@ export function DashboardPage() {
             </div>
           </div>
           {period === 'custom' && (
-            <div className="grid grid-cols-2 gap-3 sm:max-w-md">
+            <div className="grid w-full gap-3 min-[420px]:grid-cols-2 sm:max-w-md sm:w-auto">
               <Input label={t('period.from')} type="date" value={customFrom} onChange={(e) => setCustomFrom(e.target.value)} />
               <Input label={t('period.to')} type="date" value={customTo} onChange={(e) => setCustomTo(e.target.value)} />
             </div>

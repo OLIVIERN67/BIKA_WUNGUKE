@@ -113,11 +113,11 @@ export function SavingsPage() {
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-foreground sm:text-2xl">{t('savings.title')}</h1>
+        <div className="min-w-0">
+          <h1 className="page-title">{t('savings.title')}</h1>
           <p className="text-sm text-muted-foreground">{t('savings.subtitle')}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button
             variant="secondary"
             onClick={() => {
@@ -201,7 +201,7 @@ export function SavingsPage() {
                     <div className="p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <div className="flex items-center gap-2">
+                          <div className="flex min-w-0 items-center gap-2">
                             <p className="truncate font-semibold text-foreground">{goal.name}</p>
                             <Badge tone={statusTone(goal.status)}>
                               {t(`goalStatus.${goal.status}`)}
@@ -220,14 +220,14 @@ export function SavingsPage() {
                               setEditingGoal(goal);
                               setGoalFormOpen(true);
                             }}
-                            className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                            className="icon-btn hover:bg-muted hover:text-foreground"
                             aria-label={t('savings.editGoal')}
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => toggleGoalStatus(goal)}
-                            className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                            className="icon-btn hover:bg-muted hover:text-foreground"
                             aria-label={
                               goal.status === 'active' ? t('savings.closeGoal') : t('savings.reopenGoal')
                             }
@@ -240,7 +240,7 @@ export function SavingsPage() {
                           </button>
                           <button
                             onClick={() => setGoalToDelete(goal)}
-                            className="rounded-lg p-2 text-muted-foreground hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
+                            className="icon-btn hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
                             aria-label={t('savings.deleteGoal')}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -306,8 +306,8 @@ export function SavingsPage() {
             ) : (
               <div className="divide-y divide-border">
                 {rows.map((row) => (
-                  <div key={row.id} className="flex items-center justify-between gap-3 px-4 py-3">
-                    <div className="flex items-center gap-3">
+                  <div key={row.id} className="flex items-center justify-between gap-2 px-4 py-3">
+                    <div className="flex min-w-0 items-center gap-3">
                       <div
                         className={`flex h-9 w-9 items-center justify-center rounded-full ${
                           row.type === 'deposit'
@@ -329,13 +329,13 @@ export function SavingsPage() {
                               ? t('savingsTypes.deposit')
                               : t('savingsTypes.withdrawal'))}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="break-words text-xs text-muted-foreground">
                           {formatDate(row.saving_date)}
                           {row.note ? ` • ${row.note}` : ''}
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex shrink-0 items-center gap-2">
                       <div className="text-right">
                         <p
                           className={`text-sm font-semibold ${
@@ -357,14 +357,14 @@ export function SavingsPage() {
                           setEditing(row);
                           setFormOpen(true);
                         }}
-                        className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                        className="icon-btn hover:bg-muted hover:text-foreground"
                         aria-label={t('common.edit')}
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => setToDelete(row)}
-                        className="rounded-lg p-2 text-muted-foreground hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
+                        className="icon-btn hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
                         aria-label={t('common.delete')}
                       >
                         <Trash2 className="h-4 w-4" />

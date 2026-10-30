@@ -188,7 +188,7 @@ export function VerifyEmailPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-5" noValidate>
+        <form onSubmit={handleSubmit} className="form-surface mt-6 space-y-5" noValidate>
           {needsContact && (
             <Input
               label={t('register.email')}
@@ -203,7 +203,7 @@ export function VerifyEmailPage() {
             />
           )}
 
-          <div className="flex justify-between gap-2" onPaste={handlePaste}>
+          <div className="flex justify-between gap-1.5 min-[380px]:gap-2" onPaste={handlePaste}>
             {digits.map((digit, index) => (
               <input
                 key={index}
@@ -217,7 +217,7 @@ export function VerifyEmailPage() {
                 autoComplete="one-time-code"
                 maxLength={1}
                 aria-label={t('verify.digitLabel', { index: index + 1 })}
-                className="h-14 w-full rounded-xl border border-border bg-card text-center text-2xl font-bold text-foreground outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
+                className="h-14 w-full rounded-xl border border-input bg-card text-center text-2xl font-bold text-foreground shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 dark:bg-background"
               />
             ))}
           </div>

@@ -90,7 +90,7 @@ export function SavingsGoalFormModal({ open, onClose, onSaved, editing }: Props)
         </>
       }
     >
-      <form id="goal-form" onSubmit={handleSubmit} className="space-y-4">
+      <form id="goal-form" onSubmit={handleSubmit} className="form-surface space-y-4">
         <Input
           label={t('goalModal.name')}
           required

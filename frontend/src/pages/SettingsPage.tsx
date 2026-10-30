@@ -88,7 +88,7 @@ export function SettingsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-bold text-foreground sm:text-2xl">{t('settings.title')}</h1>
+        <h1 className="page-title">{t('settings.title')}</h1>
         <p className="text-sm text-muted-foreground">{t('settings.subtitle')}</p>
       </div>
 
@@ -114,7 +114,7 @@ export function SettingsPage() {
           <UserIcon className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardBody>
-          <form onSubmit={handleProfile} className="space-y-4">
+          <form onSubmit={handleProfile} className="form-surface space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <Input
                 label={t('settings.fullName')}
@@ -201,7 +201,7 @@ export function SettingsPage() {
           <KeyRound className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardBody>
-          <form onSubmit={handlePassword} className="space-y-4">
+          <form onSubmit={handlePassword} className="form-surface space-y-4">
             <div className="grid gap-4 sm:grid-cols-3">
               <PasswordInput
                 label={t('settings.currentPassword')}

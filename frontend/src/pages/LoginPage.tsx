@@ -66,7 +66,7 @@ export function LoginPage() {
           <p className="mt-1 text-sm text-muted-foreground">{t('login.subtitle')}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="form-surface space-y-4">
           <Input
             label={t('login.phone')}
             required
