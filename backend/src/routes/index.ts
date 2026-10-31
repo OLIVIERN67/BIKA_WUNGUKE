@@ -19,6 +19,7 @@ router.use('/savings', savingsRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/reports', reportRoutes);
+router.use('/insights', insightsRoutes);
 
 export default router;
 
