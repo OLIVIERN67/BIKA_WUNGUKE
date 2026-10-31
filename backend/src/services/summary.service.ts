@@ -1,5 +1,4 @@
-import { RowDataPacket } from 'mysql2';
-import { pool } from '../config/database';
+import { pool, RowDataPacket } from '../config/database';
 import * as dashboardService from './dashboard.service';
 import * as savingsService from './savings.service';
 import { CategoryBreakdown, TrendPoint } from './dashboard.service';
@@ -80,8 +79,8 @@ async function rangeTotals(userId: number, from: string, to: string): Promise<Pe
     `SELECT
         COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END), 0) AS income,
         COALESCE(SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END), 0) AS expense,
-        COALESCE(SUM(type = 'income'), 0) AS income_count,
-        COALESCE(SUM(type = 'expense'), 0) AS expense_count,
+        COALESCE(SUM(CASE WHEN type = 'income' THEN 1 ELSE 0 END), 0) AS income_count,
+        COALESCE(SUM(CASE WHEN type = 'expense' THEN 1 ELSE 0 END), 0) AS expense_count,
         COUNT(*) AS total_count
       FROM transactions
       WHERE user_id = ? AND txn_date >= ? AND txn_date <= ?`,

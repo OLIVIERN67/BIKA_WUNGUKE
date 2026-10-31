@@ -1,5 +1,4 @@
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
-import { pool } from '../config/database';
+import { pool, RowDataPacket, ResultSetHeader } from '../config/database';
 import { ApiError } from '../utils/api-error';
 import { Category } from '../types';
 import {
@@ -21,10 +20,16 @@ const DEFAULT_CATEGORIES: Array<Pick<Category, 'name' | 'type' | 'color'>> = [
 
 export async function seedDefaultCategories(userId: number): Promise<void> {
   if (DEFAULT_CATEGORIES.length === 0) return;
-  const values = DEFAULT_CATEGORIES.map((c) => [userId, c.name, c.type, c.color]);
+  const values: unknown[] = [];
+  const rows = DEFAULT_CATEGORIES.map((c) => {
+    values.push(userId, c.name, c.type, c.color);
+    return '(?, ?, ?, ?)';
+  });
   await pool.query(
-    `INSERT IGNORE INTO categories (user_id, name, type, color) VALUES ?`,
-    [values],
+    `INSERT INTO categories (user_id, name, type, color)
+     VALUES ${rows.join(', ')}
+     ON CONFLICT (user_id, name, type) DO NOTHING`,
+    values,
   );
 }
 
@@ -52,7 +57,7 @@ export async function getById(userId: number, id: number): Promise<Category> {
 
 export async function create(userId: number, input: CreateCategoryInput): Promise<Category> {
   const [result] = await pool.query<ResultSetHeader>(
-    'INSERT INTO categories (user_id, name, type, color) VALUES (?, ?, ?, ?)',
+    'INSERT INTO categories (user_id, name, type, color) VALUES (?, ?, ?, ?) RETURNING id',
     [userId, input.name, input.type, input.color],
   );
   return getById(userId, result.insertId);

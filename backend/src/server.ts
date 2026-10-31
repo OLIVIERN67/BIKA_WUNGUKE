@@ -15,9 +15,11 @@ process.on('uncaughtException', (error) => {
 async function start() {
   try {
     await testConnection();
-    console.log(`[db] connected to MySQL at ${env.db.host}:${env.db.port}/${env.db.name}`);
+    console.log(
+      `[db] connected to PostgreSQL at ${env.db.host}:${env.db.port}/${env.db.name} (schema: ${env.db.schema})`,
+    );
   } catch (error) {
-    console.error('[db] WARNING: could not connect to MySQL. Check your .env settings.');
+    console.error('[db] WARNING: could not connect to PostgreSQL. Check your .env settings.');
     console.error((error as Error).message);
   }
 

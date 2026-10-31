@@ -1,6 +1,5 @@
 import PDFDocument from 'pdfkit';
-import { RowDataPacket } from 'mysql2';
-import { pool } from '../config/database';
+import { pool, RowDataPacket } from '../config/database';
 import { ApiError } from '../utils/api-error';
 import { TransactionWithCategory } from './transaction.service';
 import { CategoryBreakdown } from './dashboard.service';

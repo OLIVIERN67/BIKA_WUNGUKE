@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { RowDataPacket } from 'mysql2';
 import { z } from 'zod';
-import { pool } from '../config/database';
+import { pool, RowDataPacket } from '../config/database';
 import { env } from '../config/env';
 import { ApiError } from '../utils/api-error';
 

@@ -1,5 +1,4 @@
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
-import { pool } from '../config/database';
+import { pool, RowDataPacket, ResultSetHeader } from '../config/database';
 import { ApiError } from '../utils/api-error';
 import { Savings, SavingsGoal, SavingsGoalProgress } from '../types';
 import {
@@ -128,7 +127,8 @@ export async function create(userId: number, input: CreateSavingsInput): Promise
   await assertGoalOwned(userId, goalId);
   const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO savings (user_id, type, amount, goal, goal_id, note, saving_date)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?)
+     RETURNING id`,
     [
       userId,
       input.type,
@@ -231,7 +231,8 @@ export async function listGoals(userId: number): Promise<SavingsGoalProgress[]> 
        LEFT JOIN savings s ON s.goal_id = g.id AND s.user_id = g.user_id
       WHERE g.user_id = ?
       GROUP BY g.id
-      ORDER BY FIELD(g.status, 'active', 'achieved', 'closed'), g.created_at DESC`,
+      ORDER BY CASE g.status WHEN 'active' THEN 1 WHEN 'achieved' THEN 2 WHEN 'closed' THEN 3 ELSE 4 END,
+               g.created_at DESC`,
     [userId],
   );
 
@@ -253,7 +254,8 @@ export async function getGoal(userId: number, id: number): Promise<SavingsGoalPr
 export async function createGoal(userId: number, input: CreateGoalInput): Promise<SavingsGoalProgress> {
   const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO savings_goals (user_id, name, target_amount, target_date, status)
-     VALUES (?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?)
+     RETURNING id`,
     [
       userId,
       input.name,

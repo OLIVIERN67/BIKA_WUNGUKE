@@ -5,7 +5,7 @@ export default defineConfig({
     environment: 'node',
     include: ['src/tests/**/*.test.ts'],
     setupFiles: ['src/tests/setup.ts'],
-    // The suite shares one MySQL test database, so files run sequentially.
+    // The suite shares one PostgreSQL test database, so files run sequentially.
     fileParallelism: false,
     testTimeout: 20000,
     hookTimeout: 60000,

@@ -1,6 +1,5 @@
 import crypto from 'crypto';
-import { ResultSetHeader, RowDataPacket } from 'mysql2';
-import { pool } from '../config/database';
+import { pool, ResultSetHeader, RowDataPacket } from '../config/database';
 import { env } from '../config/env';
 import { ApiError } from '../utils/api-error';
 import { User } from '../types';
@@ -92,7 +91,8 @@ export async function issueEmailOtp(user: User, options: OtpOptions = {}): Promi
       const expiresAt = new Date(Date.now() + OTP_TTL_MINUTES * 60_000);
       const [insert] = await conn.query<ResultSetHeader>(
         `INSERT INTO email_otp (user_id, otp_hash, expires_at, last_sent_at)
-         VALUES (?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?)
+         RETURNING id`,
         [user.id, hashOtp(otp, user.id), expiresAt, new Date()],
       );
       otpRecordId = insert.insertId;
@@ -205,7 +205,7 @@ export async function verifyEmailOtp(identity: OtpIdentity, otp: string): Promis
         await conn.query('UPDATE users SET email_verified = 1 WHERE id = ?', [user.id]);
       }
       await conn.query(
-        'UPDATE email_otp SET verified_at = NOW(6) WHERE user_id = ? AND verified_at IS NULL',
+        'UPDATE email_otp SET verified_at = NOW() WHERE user_id = ? AND verified_at IS NULL',
         [user.id],
       );
     }

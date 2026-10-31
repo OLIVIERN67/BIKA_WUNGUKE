@@ -1,5 +1,4 @@
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
-import { pool } from '../config/database';
+import { pool, RowDataPacket, ResultSetHeader } from '../config/database';
 import { ApiError } from '../utils/api-error';
 import { Transaction } from '../types';
 import {
@@ -105,7 +104,8 @@ export async function create(
   const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO transactions
        (user_id, category_id, type, amount, description, payment_method, txn_date)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?)
+     RETURNING id`,
     [
       userId,
       input.category_id ?? null,

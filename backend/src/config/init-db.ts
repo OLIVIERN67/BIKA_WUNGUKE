@@ -1,36 +1,43 @@
 import fs from 'fs';
 import path from 'path';
-import mysql from 'mysql2/promise';
+import { Client } from 'pg';
 import { env } from './env';
 
 /**
- * Creates the database, applies database/schema.sql and then runs every
- * file in database/migrations/ (all migration scripts are idempotent).
+ * Applies database/schema.sql and then runs every file in
+ * database/migrations/ (all migration scripts are idempotent).
  * Usage: npm run db:init
  * Migrations only: npm run db:migrate
  */
-async function connect() {
-  return mysql.createConnection({
+function quoteIdent(value: string): string {
+  return `"${value.replace(/"/g, '""')}"`;
+}
+
+async function connect(): Promise<Client> {
+  const client = new Client({
     host: env.db.host,
     port: env.db.port,
     user: env.db.user,
     password: env.db.password,
-    multipleStatements: true,
+    database: env.db.name,
+    ssl: env.db.sslMode === 'disable' ? undefined : { rejectUnauthorized: false },
   });
+  await client.connect();
+  await client.query(`CREATE SCHEMA IF NOT EXISTS ${quoteIdent(env.db.schema)}`);
+  await client.query(`SET search_path TO ${quoteIdent(env.db.schema)}, public`);
+  return client;
 }
 
-async function applySchema() {
-  const connection = await connect();
+async function applySchema(client: Client) {
   const schemaPath = path.resolve(__dirname, '../../database/schema.sql');
   const sql = fs.readFileSync(schemaPath, 'utf8');
 
-  console.log(`Applying schema to ${env.db.host}:${env.db.port} ...`);
-  await connection.query(sql);
-  await connection.end();
+  console.log(`Applying schema to ${env.db.host}:${env.db.port}/${env.db.name} (${env.db.schema}) ...`);
+  await client.query(sql);
   console.log('Schema applied successfully.');
 }
 
-async function applyMigrations() {
+async function applyMigrations(client: Client) {
   const migrationsDir = path.resolve(__dirname, '../../database/migrations');
   if (!fs.existsSync(migrationsDir)) return;
 
@@ -40,27 +47,29 @@ async function applyMigrations() {
     .sort();
   if (files.length === 0) return;
 
-  const connection = await connect();
   for (const file of files) {
     const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
     console.log(`Applying migration ${file} ...`);
-    await connection.query(sql);
+    await client.query(sql);
   }
-  await connection.end();
   console.log('Migrations applied successfully.');
 }
 
 async function init() {
+  let client: Client | undefined;
   try {
     const mode = process.argv[2] ?? 'init';
+    client = await connect();
     if (mode === 'init') {
-      await applySchema();
+      await applySchema(client);
     }
-    await applyMigrations();
+    await applyMigrations(client);
     console.log('Database initialised successfully.');
   } catch (error) {
     console.error('Failed to initialise database:', error);
-    process.exit(1);
+    process.exitCode = 1;
+  } finally {
+    await client?.end().catch(() => undefined);
   }
 }
 

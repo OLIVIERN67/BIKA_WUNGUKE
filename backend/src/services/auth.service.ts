@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
-import { pool } from '../config/database';
+import { pool, RowDataPacket, ResultSetHeader } from '../config/database';
 import { env } from '../config/env';
 import { ApiError } from '../utils/api-error';
 import { PublicUser, User } from '../types';
@@ -78,7 +77,8 @@ export async function register(input: RegisterInput) {
   try {
     const [result] = await pool.query<ResultSetHeader>(
       `INSERT INTO users (full_name, phone, email, password_hash, business_name, business_type, business_location, business_description, currency, locale, email_verified)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       RETURNING id`,
       [
         input.full_name,
         input.phone,
@@ -117,12 +117,13 @@ export async function register(input: RegisterInput) {
     return { user: toPublicUser(user), verificationRequired: true, otpSent };
   } catch (error) {
     // Keep the unique indexes as the source of truth if two requests race.
-    const dbError = error as { code?: string; message?: string };
-    if (dbError?.code === 'ER_DUP_ENTRY') {
-      if (dbError.message?.includes('uq_users_email')) {
+    const dbError = error as { code?: string; message?: string; constraint?: string };
+    if (dbError?.code === '23505') {
+      const detail = `${dbError.constraint ?? ''} ${dbError.message ?? ''}`;
+      if (detail.includes('uq_users_email')) {
         throw ApiError.conflict('An account with this email address already exists.');
       }
-      if (dbError.message?.includes('uq_users_phone')) {
+      if (detail.includes('uq_users_phone')) {
         throw ApiError.conflict('An account with this phone number already exists.');
       }
     }

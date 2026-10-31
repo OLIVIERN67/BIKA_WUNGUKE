@@ -56,7 +56,7 @@ summaries they can review or share.
 | --------- | -------------------------------------------------------------------------- |
 | Frontend  | React 18, TypeScript, Vite, Tailwind CSS, React Router, Recharts, Lucide    |
 | Backend   | Node.js, Express, TypeScript, REST API, Zod validation                     |
-| Database  | MySQL (via `mysql2`)                                                       |
+| Database  | PostgreSQL (via `pg`) - Neon-compatible                                   |
 | Extras    | JWT authentication, CSV + PDF export, environment variables                |
 
 ---
@@ -112,7 +112,7 @@ bika-wunguke/
 ### Prerequisites
 
 - Node.js 18+ and npm
-- MySQL 8+ running locally (or accessible)
+- PostgreSQL 14+ (local or hosted, e.g. Neon)
 
 ### 1. Clone and install
 
@@ -123,7 +123,7 @@ cd bika-wunguke
 # backend
 cd backend
 npm install
-cp .env.example .env      # then edit .env with your MySQL credentials
+cp .env.example .env      # then edit .env with your PostgreSQL credentials
 
 # frontend
 cd ../frontend
@@ -138,7 +138,7 @@ cd backend
 npm run db:init
 ```
 
-This creates the `bika_wunguke` database and all tables from `database/schema.sql`.
+This applies `database/schema.sql` and all migrations to the PostgreSQL database configured in `.env`.
 
 ### 3. Run the backend
 
@@ -167,11 +167,14 @@ The Vite dev server proxies `/api` to the backend, so no CORS setup is needed in
 | Variable        | Description                          | Default                 |
 | --------------- | ------------------------------------ | ----------------------- |
 | `PORT`          | API port                             | `4000`                  |
-| `DB_HOST`       | MySQL host                           | `localhost`             |
-| `DB_PORT`       | MySQL port                           | `3306`                  |
-| `DB_USER`       | MySQL user                           | `root`                  |
-| `DB_PASSWORD`   | MySQL password                       | —                       |
-| `DB_NAME`       | Database name                        | `bika_wunguke`          |
+| `PGHOST`        | PostgreSQL host                      | `localhost`             |
+| `PGPORT`        | PostgreSQL port                      | `5432`                  |
+| `PGUSER`        | PostgreSQL user                      | `postgres`              |
+| `PGPASSWORD`    | PostgreSQL password                  | —                       |
+| `PGDATABASE`    | Database name                        | `bika_wunguke`          |
+| `PGSSLMODE`     | SSL mode (`require` for Neon)        | `prefer`                |
+| `PGCHANNELBINDING` | Channel binding (`require` for Neon) | `prefer`             |
+| `PGSCHEMA`      | Schema used by the app               | `public`                |
 | `JWT_SECRET`    | Secret for signing JWTs              | — (set a long value)    |
 | `JWT_EXPIRES_IN`| Token lifetime                       | `7d`                    |
 | `TRUST_PROXY`   | Trusted reverse-proxy hops (rate limiting) | `1` in production  |

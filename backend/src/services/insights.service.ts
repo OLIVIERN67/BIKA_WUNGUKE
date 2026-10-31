@@ -1,5 +1,4 @@
-import { RowDataPacket } from 'mysql2';
-import { pool } from '../config/database';
+import { pool, RowDataPacket } from '../config/database';
 
 export interface DateRange {
   from: string;
@@ -212,7 +211,8 @@ export async function getSavingsInsights(userId: number): Promise<SavingsInsight
      LEFT JOIN savings s ON s.goal_id = g.id AND s.user_id = g.user_id
      WHERE g.user_id = ?
      GROUP BY g.id
-     ORDER BY FIELD(g.status, 'active', 'achieved', 'closed'), g.created_at DESC`,
+     ORDER BY CASE g.status WHEN 'active' THEN 1 WHEN 'achieved' THEN 2 WHEN 'closed' THEN 3 ELSE 4 END,
+              g.created_at DESC`,
     [userId],
   );
   const goals: SavingsGoalInsight[] = (goalRows as any[]).map((g) => {

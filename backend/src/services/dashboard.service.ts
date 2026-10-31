@@ -1,5 +1,4 @@
-import { RowDataPacket } from 'mysql2';
-import { pool } from '../config/database';
+import { pool, RowDataPacket } from '../config/database';
 import { TransactionWithCategory } from './transaction.service';
 
 export interface DashboardRange {
@@ -281,7 +280,7 @@ export async function categoryBreakdown(
       FROM transactions t
       LEFT JOIN categories c ON c.id = t.category_id
       WHERE ${where.join(' AND ')}
-      GROUP BY t.category_id, category_name, color, t.type
+      GROUP BY t.category_id, COALESCE(c.name, 'Uncategorised'), COALESCE(c.color, '#94a3b8'), t.type
       ORDER BY total DESC`,
     params,
   );
@@ -300,12 +299,13 @@ export async function monthly(userId: number, months = 6): Promise<TrendPoint[]>
   const safeMonths = Math.min(Math.max(months, 1), 24);
   const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT
-        DATE_FORMAT(txn_date, '%Y-%m') AS ym,
+        TO_CHAR(txn_date, 'YYYY-MM') AS ym,
         COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END), 0) AS income,
         COALESCE(SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END), 0) AS expense
       FROM transactions
-      WHERE user_id = ? AND txn_date >= DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL ? MONTH)
-      GROUP BY ym
+      WHERE user_id = ?
+        AND txn_date >= date_trunc('month', CURRENT_DATE) - make_interval(months => ?)
+      GROUP BY TO_CHAR(txn_date, 'YYYY-MM')
       ORDER BY ym ASC`,
     [userId, safeMonths - 1],
   );

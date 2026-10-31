@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import request from 'supertest';
-import { RowDataPacket } from 'mysql2';
 
 vi.mock('../services/email.service', () => ({
   sendPasswordResetEmail: vi.fn().mockResolvedValue(undefined),
@@ -10,7 +9,7 @@ vi.mock('../services/email.service', () => ({
 }));
 
 import app from '../app';
-import { pool } from '../config/database';
+import { pool, RowDataPacket } from '../config/database';
 import { sendOtpEmail } from '../services/email.service';
 import { resetTestDatabase } from './test-db';
 

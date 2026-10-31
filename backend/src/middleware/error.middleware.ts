@@ -31,20 +31,20 @@ export function errorHandler(
     return;
   }
 
-  // MySQL duplicate-key error
+  // PostgreSQL duplicate-key error (unique_violation)
   const anyErr = err as {
     code?: string;
     errno?: number;
     type?: string;
     message?: string;
   };
-  if (anyErr?.code === 'ER_DUP_ENTRY') {
+  if (anyErr?.code === '23505') {
     res.status(409).json({ success: false, message: 'A record with that value already exists.' });
     return;
   }
 
   // Foreign-key reference missing (e.g. a category that no longer exists)
-  if (anyErr?.code === 'ER_NO_REFERENCED_ROW_2') {
+  if (anyErr?.code === '23503') {
     res.status(409).json({
       success: false,
       message: 'A record this item refers to no longer exists.',
@@ -72,10 +72,15 @@ export function errorHandler(
   // Database unreachable - the API is up but cannot serve data
   const dbDown =
     anyErr?.code === 'ECONNREFUSED' ||
-    anyErr?.code === 'PROTOCOL_CONNECTION_LOST' ||
+    anyErr?.code === 'ECONNRESET' ||
+    anyErr?.code === 'ENOTFOUND' ||
     anyErr?.code === 'ETIMEDOUT' ||
-    anyErr?.code === 'ER_CON_COUNT_ERROR' ||
-    anyErr?.code === 'PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR';
+    anyErr?.code === '08000' ||
+    anyErr?.code === '08001' ||
+    anyErr?.code === '08003' ||
+    anyErr?.code === '08004' ||
+    anyErr?.code === '08006' ||
+    anyErr?.code === '57P01';
   if (dbDown) {
     console.error('[error] database unavailable', err);
     res.status(503).json({

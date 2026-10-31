@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
-import { ResultSetHeader, RowDataPacket } from 'mysql2';
-import { pool } from '../config/database';
+import { pool, ResultSetHeader, RowDataPacket } from '../config/database';
 import { env } from '../config/env';
 import { ApiError } from '../utils/api-error';
 import { sendPasswordResetEmail } from './email.service';
@@ -88,7 +87,7 @@ export async function resetPassword(token: string, newPassword: string): Promise
          FROM password_reset_tokens
         WHERE token_hash = ?
           AND used_at IS NULL
-          AND expires_at > NOW(6)
+          AND expires_at > NOW()
         LIMIT 1`,
       [tokenHash],
     );
@@ -105,12 +104,12 @@ export async function resetPassword(token: string, newPassword: string): Promise
       [password_hash, record.user_id],
     );
     await conn.query<ResultSetHeader>(
-      'UPDATE password_reset_tokens SET used_at = NOW(6) WHERE id = ?',
+      'UPDATE password_reset_tokens SET used_at = NOW() WHERE id = ?',
       [record.id],
     );
     // Invalidate every other outstanding token for this account.
     await conn.query<ResultSetHeader>(
-      'UPDATE password_reset_tokens SET used_at = NOW(6) WHERE user_id = ? AND used_at IS NULL',
+      'UPDATE password_reset_tokens SET used_at = NOW() WHERE user_id = ? AND used_at IS NULL',
       [record.user_id],
     );
 
@@ -136,7 +135,7 @@ export async function isResetTokenValid(token: string): Promise<boolean> {
        FROM password_reset_tokens
       WHERE token_hash = ?
         AND used_at IS NULL
-        AND expires_at > NOW(6)
+        AND expires_at > NOW()
       LIMIT 1`,
     [tokenHash],
   );
