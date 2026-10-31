@@ -194,6 +194,26 @@ The Vite dev server proxies `/api` to the backend, so no CORS setup is needed in
 | `VITE_API_BASE_URL` | Base URL of the API                  | `/api`  |
 | `VITE_APP_NAME`     | App display name                     | `BIKA WUNGUKE` |
 
+### Vercel deployment
+
+Connect the repository to Vercel with the **Root Directory set to the repository root** (not
+`frontend`). Keep the production branch set to `main` and let the checked-in `vercel.json` build
+the frontend and route `/api/*` to the Express function. The frontend uses the same-origin `/api`
+path by default, so `VITE_API_BASE_URL` does not need to contain a hardcoded deployment URL.
+
+Add these variables in Vercel for Production (and Preview too if preview deployments should use
+the live database):
+
+- `PGHOST`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`, and `PGSSLMODE=require` from Neon.
+- `JWT_SECRET` set to a unique random value of at least 32 characters.
+- `CLIENT_ORIGIN=https://bika-wunguke.vercel.app` and
+  `FRONTEND_URL=https://bika-wunguke.vercel.app`.
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, and `EMAIL_FROM` so OTP
+  verification and password reset emails can be delivered.
+
+Vercel injects these values into `process.env` for the function; database credentials and the JWT
+secret must not use a `VITE_` prefix. After changing the Vercel settings, redeploy the `main` branch.
+
 ---
 
 ## Password reset
